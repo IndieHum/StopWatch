@@ -12,3 +12,4 @@
 /home/moein/Desktop/linuxDev/StopWatch/obj/Debug/net8.0/StopWatch.pdb
 /home/moein/Desktop/linuxDev/StopWatch/obj/Debug/net8.0/StopWatch.genruntimeconfig.cache
 /home/moein/Desktop/linuxDev/StopWatch/obj/Debug/net8.0/ref/StopWatch.dll
+/home/moein/Desktop/linuxDev/StopWatch/obj/Debug/net8.0/StopWatch.sourcelink.json

@@ -1,54 +1,83 @@
-﻿class StopWatch
+﻿class StopwatchApp
 {
-  static int Second = 0;
-  static int Minute = 0;
-  static void Main(string[] args)
+  private static bool _running = false;
+  private static double _timeTemp = 0;
+
+  static void Main()
   {
-    bool isDone = true;
-    while (isDone)
+    Console.WriteLine("Basic Stopwatch (No Gui stuff here!)");
+    Console.WriteLine("----------------");
+    Console.WriteLine("Commands: start, stop, reset, exit");
+
+    while (true)
     {
-      Console.Clear();
-      Console.WriteLine("*** Stop Watch ***");
-      Console.WriteLine("1) start \n2) Continue \n3) exit");
-      Console.WriteLine($"\nlast activity: {0}s\n");
+      Console.Write("Enter command: ");
+      string command = Console.ReadLine().ToLower();
 
-      Arrow();
-      string input = Console.ReadLine();
-
-      if (int.TryParse(input, out int userInput))
+      switch (command)
       {
-        switch (userInput)
-        {
-          case 1:
-            startWatch();
-            break;
-          case 2:
-            break;
-          case 3:
-            Console.WriteLine("Goodbye...");
-            isDone = false;
-            break;
-          default:
-            Console.WriteLine("Wrong number!");
-            break;
-        }
+        case "start":
+          Start();
+          break;
+        case "stop":
+          Stop();
+          break;
+        case "reset":
+          Reset();
+          break;
+        case "exit":
+          Stop();
+          Console.WriteLine("Exiting the stopwatch. Goodbye!");
+          return;
+        default:
+          Console.WriteLine("Commands: start, stop, reset, exit");
+          break;
       }
-      else Console.WriteLine("Wrong!");
     }
   }
 
-  static void startWatch()
+  private static void Start()
   {
-    bool isRunning = true;
-    while (isRunning)
+    if (_running)
     {
-      if (Second == 10) { Minute++; Second = 0; }
-      Console.Clear();
-      Console.WriteLine(Minute >= 10 || Second > 10 ? $"{Minute}:{Second}" : $"0{Minute}:0{Second}");
-      Second++;
-      System.Threading.Thread.Sleep(1000);
+      Console.WriteLine("The stopwatch is already running.");
+      return;
     }
+
+    _running = true;
+    // not done!
+    Console.WriteLine("Stopwatch started.");
   }
 
-  static void Arrow() => Console.Write("=> ");
+  private static void Stop()
+  {
+    if (!_running)
+    {
+      Console.WriteLine("The stopwatch is not running.");
+      return;
+    }
+
+    _running = false;
+    _timerThread.Join();
+    Console.WriteLine("Stopwatch stopped.");
+    Console.WriteLine($"Elapsed time: {_elapsed}");
+  }
+
+  private static void Reset()
+  {
+    Stop();
+    _elapsed = TimeSpan.Zero;
+    Console.WriteLine("Stopwatch reset.");
+  }
+
+  private static void TimerLoop()
+  {
+    DateTime startTime = DateTime.Now;
+
+    while (_running)
+    {
+      _elapsed = DateTime.Now - startTime;
+      Thread.Sleep(10); // Adjust for smooth updates while minimizing CPU usage
+    }
+  }
 }
