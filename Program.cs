@@ -1,20 +1,20 @@
 ﻿class StopwatchApp
 {
+  private static TimeSpan _elapsed;
+  private static Thread _threadTime;
   private static bool _running = false;
-  private static double _timeTemp = 0;
 
-  static void Main()
+  static void Main(string[] args)
   {
-    Console.WriteLine("Basic Stopwatch (No Gui stuff here!)");
-    Console.WriteLine("----------------");
-    Console.WriteLine("Commands: start, stop, reset, exit");
-
     while (true)
     {
-      Console.Write("Enter command: ");
-      string command = Console.ReadLine().ToLower();
+      Console.WriteLine("*** SimpleStopWatch ***");
+      Console.WriteLine("command: start | stop | reset | exit");
 
-      switch (command)
+      Arrow();
+      string? input = Console.ReadLine();
+
+      switch (input)
       {
         case "start":
           Start();
@@ -26,58 +26,56 @@
           Reset();
           break;
         case "exit":
-          Stop();
-          Console.WriteLine("Exiting the stopwatch. Goodbye!");
+          Console.WriteLine("bye bye!");
           return;
         default:
-          Console.WriteLine("Commands: start, stop, reset, exit");
+          Console.WriteLine("command: start | stop | reset | exit");
           break;
       }
     }
   }
 
-  private static void Start()
+  static void Reset()
   {
-    if (_running)
-    {
-      Console.WriteLine("The stopwatch is already running.");
-      return;
-    }
+    _threadTime.Join();
+    _elapsed = TimeSpan.Zero;
+    _reseted = !_reseted ? true : false;
 
-    _running = true;
-    // not done!
-    Console.WriteLine("Stopwatch started.");
+    Console.WriteLine("StopWatch Reseted!\n");
   }
+
+  static void Arrow() => Console.Write("=> ");
 
   private static void Stop()
   {
-    if (!_running)
-    {
-      Console.WriteLine("The stopwatch is not running.");
-      return;
-    }
+    if (!_running) { Console.WriteLine("Does Not Started Yet!\n"); return; }
 
     _running = false;
-    _timerThread.Join();
-    Console.WriteLine("Stopwatch stopped.");
-    Console.WriteLine($"Elapsed time: {_elapsed}");
+    _threadTime.Join();
+
+    Console.WriteLine("Timer Stoped!");
+    Console.WriteLine($"Timer: {_elapsed.ToString(@"hh\:mm\:ss")}\n");
   }
 
-  private static void Reset()
+  private static void Start()
   {
-    Stop();
-    _elapsed = TimeSpan.Zero;
-    Console.WriteLine("Stopwatch reset.");
+    if (_running) { Console.WriteLine("Already Started!\n"); return; }
+
+    _running = true;
+    _threadTime = new Thread(StartTimer);
+    _threadTime.Start();
+
+    Console.WriteLine("Timer Started!\n");
   }
 
-  private static void TimerLoop()
+  private static void StartTimer()
   {
-    DateTime startTime = DateTime.Now;
+    DateTime firstPoint = DateTime.Now;
 
     while (_running)
     {
-      _elapsed = DateTime.Now - startTime;
-      Thread.Sleep(10); // Adjust for smooth updates while minimizing CPU usage
+      _elapsed = DateTime.Now - firstPoint;
+      Thread.Sleep(1000);
     }
   }
 }
