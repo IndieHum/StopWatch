@@ -1,6 +1,6 @@
 ﻿class StopwatchApp
 {
-  private static TimeSpan _elapsed;
+  private static TimeSpan _elapsed = TimeSpan.Zero;
   private static Thread _threadTime;
   private static bool _running = false;
 
@@ -37,9 +37,10 @@
 
   static void Reset()
   {
+    if (_running) _running = false;
+
     _threadTime.Join();
     _elapsed = TimeSpan.Zero;
-    _reseted = !_reseted ? true : false;
 
     Console.WriteLine("StopWatch Reseted!\n");
   }
